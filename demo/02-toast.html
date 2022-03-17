@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>demo</title>
+        <style>
+            #loading {
+                position: fixed;
+                top: 0;
+                left: 0;
+
+                width: 100vw;
+                height: 100vh;
+
+                background-color: rgba(0, 0, 0, 0.5);
+                color: #fff;
+                line-height: 100vh;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <button @click="loading">开始 loading</button>
+        </div>
+        <script src="../node_modules/vue/dist/vue.js"></script>
+        <script>
+            let vm = new Vue({
+                el: '#app',
+                methods: {
+                    loading() {
+                        console.log('.....');
+
+                        let hide = this.$loading('加载中 。。。 ');
+                        setTimeout(() => {
+                            hide();
+                        }, 2000);
+                    }
+                }
+            });
+
+            // 创建一个组件类
+            const LoadingCtor = Vue.extend({
+                template: `<div id="loading">{{msg}}</div>`,
+                // 方式1
+                // props: {
+                //     msg: String
+                // },
+
+                // 方式2
+                props: ['msg'],
+                mounted() {
+                    console.log(this.msg);
+                }
+            });
+
+            // loading方法
+            function loading(msg) {
+                let div = document.createElement('div');
+                div.setAttribute('id', 'loading-wrapper');
+                document.body.appendChild(div);
+
+                // 传递 props 值方法，options 的格式 ,创建实例时传递 props 的方式。
+                new LoadingCtor({ propsData: { msg } }).$mount('#loading-wrapper');
+
+                return () => {
+                    document.body.removeChild(document.querySelector('#loading'));
+                };
+            }
+
+            Vue.prototype.$loading = loading;
+        </script>
+    </body>
+</html>

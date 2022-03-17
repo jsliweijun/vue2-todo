@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>demo</title>
+        <style>
+            .content {
+                width: 200px;
+                height: 200px;
+                background-color: #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 下面内容区点击不到 
+                1. 延迟隐藏
+                2， 通过判断点击的是否在当前区域 el
+            -->
+            <!-- <input type="text" @focus="focus" @blur="blur" />
+            <div class="content" v-if="isShow">
+                内容
+                <button>点我</button>
+            </div> -->
+
+            <div v-click-outside>
+                <input type="text" />
+                <div class="content" v-if="isShow">
+                    内容
+                    <button>点我</button>
+                </div>
+            </div>
+        </div>
+        <script src="../node_modules/vue/dist/vue.js"></script>
+        <script>
+            let vm = new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        isShow: false
+                    };
+                },
+                methods: {
+                    focus() {
+                        this.isShow = true;
+                    },
+                    blur() {
+                        this.isShow = false;
+                    }
+                },
+                directives: {
+                    clickOutside: {
+                        bind(el, bindings, vnode) {
+                            el.fn = (e) => {
+                                console.log('123');
+                                // el 判断当前点击是否在当前区域
+                                if (el.contains(e.target)) {
+                                    vnode.context['focus']();
+                                } else {
+                                    vnode.context['blur']();
+                                }
+                            };
+
+                            // 事件委托
+                            document.addEventListener('click', el.fn);
+                        },
+                        // 事件解绑，不然上面事件还存在，会报错。
+                        unbind(el) {
+                            document.removeEventListener('click', el.fn);
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

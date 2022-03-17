@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>demo</title>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script src="../node_modules/vue/dist/vue.js"></script>
+        <script>
+            // 返回一个 Vue 子类的组件构造函数。
+            let Profile = Vue.extend({
+                template: `<p>I'm  {{firstName}} {{lastName}} </p>`,
+                data: function() {
+                    return {
+                        firstName: 'li',
+                        lastName: 'Oliver'
+                    };
+                }
+            });
+
+            // new 创建组件实例，并挂载到dom元素上。
+            new Profile().$mount('#app');
+        </script>
+    </body>
+</html>
