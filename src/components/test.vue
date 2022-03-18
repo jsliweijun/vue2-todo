@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        {{ this.$store.state.age }}
+        年龄： {{ this.$store.state.age }} <br />
+        <div>getters: {{ this.$store.getters.addAge }}</div>
         <button @click="add">加1</button>
     </div>
 </template>
