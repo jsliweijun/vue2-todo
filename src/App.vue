@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <Test></Test>
+        <div>test123</div>
+        <!-- <Test></Test> -->
     </div>
 </template>
 

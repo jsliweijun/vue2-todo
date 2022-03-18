@@ -23,6 +23,30 @@ const store = new Vuex.Store({
                 commit('increment', payload);
             }, 2000);
         }
+    },
+    namespaced: true,
+    modules: {
+        a: {
+            state: { age: 11 },
+            getters: {
+                aAge(state) {
+                    return state.age + 1;
+                }
+            },
+            modules: {
+                aa: {
+                    state: { age1: 111 }
+                }
+            }
+        },
+        b: {
+            state: { age: 12 },
+            getters: {
+                aAge(state) {
+                    return state.age + 2;
+                }
+            }
+        }
     }
 });
 
