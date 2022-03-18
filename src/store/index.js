@@ -12,8 +12,18 @@ const store = new Vuex.Store({
             return 10 + state.age;
         }
     },
-    mutations: {},
-    actions: {}
+    mutations: {
+        increment(state, payload) {
+            state.age += payload.n;
+        }
+    },
+    actions: {
+        asyncIncrement({ commit }, payload) {
+            setTimeout(() => {
+                commit('increment', payload);
+            }, 2000);
+        }
+    }
 });
 
 export default store;

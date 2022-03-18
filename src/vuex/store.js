@@ -5,24 +5,46 @@ import { Vue } from './install';
 // 对里面上数据实现 相应式，时通过 Vue 实例完成，里面需要 new 一个Vue 实例
 // 使用 install 时传入的
 
+function forEach(obj, fn) {
+    Object.keys(obj).forEach((key) => {
+        fn(obj[key], key);
+    });
+}
+
 // 要给这个类的实例提高 state ，getters  属性对象 this.$store.state.age
 export class Store {
     constructor(options) {
         console.log('new Vuex.Store()', options);
         let { state, getters, actions, mutations } = options;
 
+        // actions
+        this.actions = {};
+        forEach(actions, (fn, key) => {
+            this.actions[key] = (payload) => fn.call(this, this, payload);
+        });
+
+        // mutations
+        this.mutations = {};
+        Object.keys(mutations).forEach((key) => {
+            this.mutations[key] = (payload) => {
+                // mutations[key](this.state, payload);   this 可能会变
+                let fn = mutations[key];
+                fn.call(this, this.state, payload);
+            };
+        });
+
+        //-------------
         // getters 在配置的 store 文件中是一个 函数，需要在获取 getters 时调用里面的函数
         // 将 getters 转为 _vm 的计算属性和 Store的实例属性，获取时通过代理道 _vm 获取值。
         this.getters = {};
         let computed = {}; // 调用计算属性时，需要传入state
-        let keys = Object.keys(getters);
-        keys.forEach((key) => {
+        Object.keys(getters).forEach((key) => {
             computed[key] = () => {
                 return getters[key](this.state);
             };
         });
         // 增加代理
-        keys.forEach((key) => {
+        Object.keys(getters).forEach((key) => {
             Object.defineProperty(this.getters, key, {
                 get: () => {
                     return this._vm[key];
@@ -30,6 +52,7 @@ export class Store {
             });
         });
 
+        //-------------
         // this.state = state; // 如果直接赋值给它，它不是响应式的。通过下面使用 Vue 实例实现响应式。
         // 使用一个 Vue 实例进行响应式管理 state
         this._vm = new Vue({
@@ -41,6 +64,17 @@ export class Store {
 
         // console.log(this._vm);
     }
+
+    // 实例的方法，
+    // 触发 mutations 执行
+    commit = (type, payload) => {
+        this.mutations[type](payload);
+    };
+
+    // 触发 actions 执行
+    dispatch = (type, payload) => {
+        this.actions[type](payload);
+    };
 
     // 代理操作，到响应式的 vue 实例中获取数据，当调用了 get 方法，就会进行依赖收集
     // 所以下次属性变化后，_vm 会通过组件更新
