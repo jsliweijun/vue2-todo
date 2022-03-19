@@ -1,6 +1,8 @@
 <template>
     <div id="app">
-        <Test></Test>
+        <router-link to="/">首页</router-link>
+        <router-link to="/about">关于</router-link>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -11,7 +13,8 @@ export default {
     name: 'App',
     components: { Test },
     mounted() {
-        console.log('app', this.$store);
+        //  this.$router = 10; // "TypeError: Cannot set property $router of #<Vue> which has only a getter"
+        console.log(this);
     }
 };
 </script>
